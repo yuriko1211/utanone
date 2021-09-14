@@ -1,6 +1,6 @@
 require 'natto'
 module Utanone
-  class Parser
+  class Uta
     attr_reader :original_str, :parsed_str
 
     # TODO: 半角数字だと読み仮名が出ないので全角数字にしてあげる処理をかませる必要がありそう
