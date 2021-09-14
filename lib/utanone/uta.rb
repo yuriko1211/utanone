@@ -3,7 +3,6 @@ module Utanone
   class Uta
     attr_reader :original_str, :parsed_str
 
-    # TODO: 半角数字だと読み仮名が出ないので全角数字にしてあげる処理をかませる必要がありそう
     def initialize(str)
       @original_str = str
       @parsed_str = parse_to_hash(str)
@@ -29,7 +28,7 @@ module Utanone
 
     private
     def parse_to_hash(str)
-      parsed_str_enum = natto.enum_parse(str)
+      parsed_str_enum = natto.enum_parse(conversion_number(str))
       parsed_str_enum.each_with_object([]) do |result, array|
         next if result.is_eos?
         # 形態素
@@ -47,6 +46,11 @@ module Utanone
           ruby_size: ruby.size
         }
       end
+    end
+
+    def conversion_number(str)
+      # 半角数字を全角数字にしないと読みが取れないので変換する
+      original_str.tr("0-9", "０-９")
     end
 
     def natto
