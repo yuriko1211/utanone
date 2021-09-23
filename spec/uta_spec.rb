@@ -15,5 +15,23 @@ RSpec.describe Utanone::Uta do
     end
   end
 
+  describe '#count'do
+    subject { uta.count(tanka: tanka_option) }
+
+    context 'tankaがfalseのとき' do
+      let(:tanka_option) { false }
+
+      it 'よみがなの文字数から発音しない記号の文字数を引いた数をそのまま返す' do
+        is_expected.to be 27
+      end
+    end
+
+    context 'tankaがtrueのとき' do
+      let(:tanka_option) { true }
+
+      it 'よみがなの文字数から発音しない記号の文字数を引いた数に対してさらに「ァ|ィ|ォ|ャ|ュ|ョ」を除外した文字数を返す' do
+        is_expected.to be 26
+      end
+    end
   end
 end
