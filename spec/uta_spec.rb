@@ -4,6 +4,27 @@ RSpec.describe Utanone::Uta do
   let(:uta) { Utanone::Uta.new(str) }
   let(:str) { 'あっつい夏の日、3時にアイスクリームを食べちゃったね' }
 
+  describe 'initialize' do
+    subject { Utanone::Uta.new(str) }
+
+    context '正常にパースできたとき' do
+      it 'インスタンスが生成される' do
+        is_expected.to be_truthy
+      end
+    end
+
+    context 'Natto::MeCabError が発生したとき' do
+      it 'Utanone::ParseError がraiseされる' do
+        natto_mock = double('natto_mock')
+        allow(natto_mock).to receive(:enum_parse).and_raise(Natto::MeCabError)
+        allow(Natto::MeCab).to receive(:new).and_return(natto_mock)
+        expect{ subject }.to raise_error(Utanone::ParseError)
+      end
+    end
+
+    # TODO: ルビが取得できなかったパターンのテストを追加したい
+  end
+
   describe '#yomigana'do
     subject { uta.yomigana }
 
