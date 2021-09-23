@@ -8,5 +8,12 @@ RSpec.describe Utanone::Uta do
     subject { uta.yomigana }
 
     it { is_expected.to eq 'アッツイナツノヒ、サンジニアイスクリームヲタベチャッタネ' }
+
+    context '半角英数字が含まれるとき' do
+      let(:str) { 'CDを夜3時に聞いた' }
+      it { is_expected.to eq 'シーディーヲヨルサンジニキイタ' }
+    end
+  end
+
   end
 end
