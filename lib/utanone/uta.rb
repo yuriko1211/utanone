@@ -31,11 +31,7 @@ module Utanone
 
     private
     def parse_to_hash(str)
-      begin
-        parsed_str_enum = natto.enum_parse(conversion_number(str))
-      rescue Natto::MeCabError => e
-        raise Utanone::ParseError
-      end
+      parsed_str_enum = natto.enum_parse(conversion_number(str))
 
       parsed_str_enum.each_with_object([]) do |result, array|
         next if result.is_eos?
@@ -56,6 +52,8 @@ module Utanone
           ruby_size: ruby.size
         }
       end
+    rescue Natto::MeCabError => e
+      raise Utanone::ParseError
     end
 
     def conversion_number(str)
