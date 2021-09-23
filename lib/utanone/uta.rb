@@ -3,6 +3,9 @@ module Utanone
   class Uta
     attr_reader :original_str, :parsed_str
 
+    EXCLUDING_COUNTING_RUBY_BY_TANKA = /ァ|ィ|ォ|ャ|ュ|ョ/
+    EXCLUDING_COUNTING_LEXICAL_CATEGORIES = %w(記号)
+
     def initialize(str)
       @original_str = str
       @parsed_str = parse_to_hash(str)
@@ -13,12 +16,12 @@ module Utanone
     end
 
     def count(tanka: false)
-      words_hash_without_symbol = @parsed_str.reject{ _1[:lexical_category] == '記号' }
+      words_hash_without_symbol = @parsed_str.reject{ Utanone::Uta::EXCLUDING_COUNTING_LEXICAL_CATEGORIES.include?(_1[:lexical_category]) }
       count_size = 0
       words_hash_without_symbol.each do |h|
         if tanka
           # tanka オプションを入れた場合は ァ|ィ|ォ|ャ|ュ|ョ は音数に数えない
-          count_size += h[:ruby].size - h[:ruby].scan(/ァ|ィ|ォ|ャ|ュ|ョ/).size
+          count_size += h[:ruby].size - h[:ruby].scan(Utanone::Uta::EXCLUDING_COUNTING_RUBY_BY_TANKA).size
         else
           count_size += h[:ruby].size
         end
