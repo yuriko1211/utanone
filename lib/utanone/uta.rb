@@ -17,8 +17,8 @@ module Utanone
       count_size = 0
       words_hash_without_symbol.each do |h|
         if tanka
-          # tanka オプションを入れた場合は ァ|ォ|ャ|ュ|ョ は音数に数えない
-          count_size += h[:ruby].size - h[:ruby].scan(/ァ|ォ|ャ|ュ|ョ/).size
+          # tanka オプションを入れた場合は ァ|ィ|ォ|ャ|ュ|ョ は音数に数えない
+          count_size += h[:ruby].size - h[:ruby].scan(/ァ|ィ|ォ|ャ|ュ|ョ/).size
         else
           count_size += h[:ruby].size
         end
