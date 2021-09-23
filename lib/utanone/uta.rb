@@ -28,7 +28,12 @@ module Utanone
 
     private
     def parse_to_hash(str)
-      parsed_str_enum = natto.enum_parse(conversion_number(str))
+      begin
+        parsed_str_enum = natto.enum_parse(conversion_number(str))
+      rescue Natto::MeCabError => e
+        raise Utanone::ParseError
+      end
+
       parsed_str_enum.each_with_object([]) do |result, array|
         next if result.is_eos?
         # 形態素
@@ -38,6 +43,8 @@ module Utanone
         lexical_category = splited_result[0]
         # 読み
         ruby = splited_result[7]
+
+        raise Utanone::ParseError unless ruby
 
         array << {
           word: word,
