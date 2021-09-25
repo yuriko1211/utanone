@@ -5,7 +5,7 @@ require_relative "lib/utanone/version"
 Gem::Specification.new do |spec|
   spec.name          = "utanone"
   spec.version       = Utanone::VERSION
-  spec.authors       = ["yuko yuri"]
+  spec.authors       = ["yuriko1211"]
   spec.email         = ["yuriko11d@gmail.com"]
 
   spec.summary       = "Utanone is a helper that counts the number of sounds in Japanese sentences."
