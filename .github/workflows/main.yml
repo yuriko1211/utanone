@@ -3,9 +3,11 @@ name: Ruby
 on:
   push:
     branches:
-      - master
+      - main
 
   pull_request:
+    branches:
+      - main
 
 jobs:
   build:
@@ -17,11 +19,15 @@ jobs:
           - 3.0.1
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: ${{ matrix.ruby }}
-        bundler-cache: true
-    - name: Run the default task
-      run: bundle exec rake
+      - uses: actions/checkout@v2
+      - name: Install Mecub
+        run: |
+          sudo apt-get update;
+          sudo apt-get -y install mecab libmecab-dev mecab-ipadic-utf8
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - name: Run RSpec
+        run: bundle exec rspec
