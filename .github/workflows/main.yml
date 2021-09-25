@@ -20,6 +20,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - name: Install Mecub
+        run: |
+          sudo apt-get update;
+          sudo apt-get -y install mecab libmecab-dev mecab-ipadic-utf8
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
