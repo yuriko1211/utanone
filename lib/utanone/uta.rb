@@ -50,14 +50,13 @@ module Utanone
           if next_morpheme
             # 修正済みよみがなから次の形態素に一致する箇所を探すことで修正したい形態素のよみがなを取得する
             next_morpheme_start = corrected_yomigana.index(next_morpheme[:ruby])
-            if next_morpheme_start
-              # 取得できた場合は修正する
-              morpheme[:ruby] = corrected_yomigana[0, next_morpheme_start]
-            else
-              # 一致箇所がなければ修正ができないものとして処理を中断する（よみがな不一致が連続すると修正できない）
-              # TODO: 再帰を使って連続したよみがな不一致も修正できないか
-              break
-            end
+
+            # 一致箇所がなければ修正ができないものとして処理を中断する（よみがな不一致が連続すると修正できない）
+            # TODO: 再帰を使って連続したよみがな不一致も修正できないか
+            break unless next_morpheme_start
+
+            # 取得できた場合は修正する
+            morpheme[:ruby] = corrected_yomigana[0, next_morpheme_start]
             corrected_yomigana.slice!(0, morpheme[:ruby].size)
           else
             # 最後の形態素だった時
