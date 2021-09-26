@@ -15,21 +15,21 @@ RSpec.describe Utanone::Uta do
 
         it 'parsed_morphemes の値が期待通りであること' do
           expect(subject.parsed_morphemes).to eq [
-            {:word=>"一", :ruby=>"イチ", :lexical_category=>"名詞"},
-            {:word=>"千", :ruby=>"セン", :lexical_category=>"名詞"},
-            {:word=>"年", :ruby=>"ネン", :lexical_category=>"名詞"},
-            {:word=>"眠っ", :ruby=>"ネムッ", :lexical_category=>"動詞"},
-            {:word=>"た", :ruby=>"タ", :lexical_category=>"助動詞"},
-            {:word=>"明日", :ruby=>"アシタ", :lexical_category=>"名詞"},
-            {:word=>"を", :ruby=>"ヲ", :lexical_category=>"助詞"},
-            {:word=>"見", :ruby=>"ミ", :lexical_category=>"動詞"},
-            {:word=>"て", :ruby=>"テ", :lexical_category=>"助詞"},
-            {:word=>"み", :ruby=>"ミ", :lexical_category=>"動詞"},
-            {:word=>"たい", :ruby=>"タイ", :lexical_category=>"助動詞"},
-            {:word=>"太陽", :ruby=>"タイヨウ", :lexical_category=>"名詞"},
-            {:word=>"以外", :ruby=>"イガイ", :lexical_category=>"名詞"},
-            {:word=>"みな", :ruby=>"ミナ", :lexical_category=>"名詞"},
-            {:word=>"新しい", :ruby=>"アタラシイ", :lexical_category=>"形容詞"}
+            { word: '一', ruby: 'イチ', lexical_category: '名詞' },
+            { word: '千', ruby: 'セン', lexical_category: '名詞' },
+            { word: '年', ruby: 'ネン', lexical_category: '名詞' },
+            { word: '眠っ', ruby: 'ネムッ', lexical_category: '動詞' },
+            { word: 'た', ruby: 'タ', lexical_category: '助動詞' },
+            { word: '明日', ruby: 'アシタ', lexical_category: '名詞' },
+            { word: 'を', ruby: 'ヲ', lexical_category: '助詞' },
+            { word: '見', ruby: 'ミ', lexical_category: '動詞' },
+            { word: 'て', ruby: 'テ', lexical_category: '助詞' },
+            { word: 'み', ruby: 'ミ', lexical_category: '動詞' },
+            { word: 'たい', ruby: 'タイ', lexical_category: '助動詞' },
+            { word: '太陽', ruby: 'タイヨウ', lexical_category: '名詞' },
+            { word: '以外', ruby: 'イガイ', lexical_category: '名詞' },
+            { word: 'みな', ruby: 'ミナ', lexical_category: '名詞' },
+            { word: '新しい', ruby: 'アタラシイ', lexical_category: '形容詞' }
           ]
         end
       end
@@ -63,21 +63,21 @@ RSpec.describe Utanone::Uta do
           # 1. "アシタ" => "アス"
           # 2. "イチ" => "イッ"
           expect(subject.parsed_morphemes).to eq [
-            {:word=>"一", :ruby=>"イッ", :lexical_category=>"名詞"},
-            {:word=>"千", :ruby=>"セン", :lexical_category=>"名詞"},
-            {:word=>"年", :ruby=>"ネン", :lexical_category=>"名詞"},
-            {:word=>"眠っ", :ruby=>"ネムッ", :lexical_category=>"動詞"},
-            {:word=>"た", :ruby=>"タ", :lexical_category=>"助動詞"},
-            {:word=>"明日", :ruby=>"アス", :lexical_category=>"名詞"},
-            {:word=>"を", :ruby=>"ヲ", :lexical_category=>"助詞"},
-            {:word=>"見", :ruby=>"ミ", :lexical_category=>"動詞"},
-            {:word=>"て", :ruby=>"テ", :lexical_category=>"助詞"},
-            {:word=>"み", :ruby=>"ミ", :lexical_category=>"動詞"},
-            {:word=>"たい", :ruby=>"タイ", :lexical_category=>"助動詞"},
-            {:word=>"太陽", :ruby=>"タイヨウ", :lexical_category=>"名詞"},
-            {:word=>"以外", :ruby=>"イガイ", :lexical_category=>"名詞"},
-            {:word=>"みな", :ruby=>"ミナ", :lexical_category=>"名詞"},
-            {:word=>"新しい", :ruby=>"アタラシイ", :lexical_category=>"形容詞"}
+            { word: '一', ruby: 'イッ', lexical_category: '名詞' },
+            { word: '千', ruby: 'セン', lexical_category: '名詞' },
+            { word: '年', ruby: 'ネン', lexical_category: '名詞' },
+            { word: '眠っ', ruby: 'ネムッ', lexical_category: '動詞' },
+            { word: 'た', ruby: 'タ', lexical_category: '助動詞' },
+            { word: '明日', ruby: 'アス', lexical_category: '名詞' },
+            { word: 'を', ruby: 'ヲ', lexical_category: '助詞' },
+            { word: '見', ruby: 'ミ', lexical_category: '動詞' },
+            { word: 'て', ruby: 'テ', lexical_category: '助詞' },
+            { word: 'み', ruby: 'ミ', lexical_category: '動詞' },
+            { word: 'たい', ruby: 'タイ', lexical_category: '助動詞' },
+            { word: '太陽', ruby: 'タイヨウ', lexical_category: '名詞' },
+            { word: '以外', ruby: 'イガイ', lexical_category: '名詞' },
+            { word: 'みな', ruby: 'ミナ', lexical_category: '名詞' },
+            { word: '新しい', ruby: 'アタラシイ', lexical_category: '形容詞' }
           ]
         end
       end
@@ -129,11 +129,11 @@ RSpec.describe Utanone::Uta do
         it 'よみがなが修正された状態のUtaオブジェクトが返却されること' do
           expect(subject.yomigana).to eq 'ゴゼンヨジノトモシビ'
           expect(subject.parsed_morphemes).to eq [
-            {:word=>"午前", :ruby=>"ゴゼン", :lexical_category=>"名詞"},
-            {:word=>"四", :ruby=>"ヨ", :lexical_category=>"名詞"},
-            {:word=>"時", :ruby=>"ジ", :lexical_category=>"名詞"},
-            {:word=>"の", :ruby=>"ノ", :lexical_category=>"助詞"},
-            {:word=>"灯", :ruby=>"トモシビ", :lexical_category=>"名詞"}
+            { word: '午前', ruby: 'ゴゼン', lexical_category: '名詞' },
+            { word: '四', ruby: 'ヨ', lexical_category: '名詞' },
+            { word: '時', ruby: 'ジ', lexical_category: '名詞' },
+            { word: 'の', ruby: 'ノ', lexical_category: '助詞' },
+            { word: '灯', ruby: 'トモシビ', lexical_category: '名詞' }
           ]
         end
 
@@ -141,11 +141,11 @@ RSpec.describe Utanone::Uta do
           subject
           expect(uta.yomigana).to eq 'ゴゼンヨンジノアカリ'
           expect(uta.parsed_morphemes).to eq [
-            {:word=>"午前", :ruby=>"ゴゼン", :lexical_category=>"名詞"},
-            {:word=>"四", :ruby=>"ヨン", :lexical_category=>"名詞"},
-            {:word=>"時", :ruby=>"ジ", :lexical_category=>"名詞"},
-            {:word=>"の", :ruby=>"ノ", :lexical_category=>"助詞"},
-            {:word=>"灯", :ruby=>"アカリ", :lexical_category=>"名詞"}
+            { word: '午前', ruby: 'ゴゼン', lexical_category: '名詞' },
+            { word: '四', ruby: 'ヨン', lexical_category: '名詞' },
+            { word: '時', ruby: 'ジ', lexical_category: '名詞' },
+            { word: 'の', ruby: 'ノ', lexical_category: '助詞' },
+            { word: '灯', ruby: 'アカリ', lexical_category: '名詞' }
           ]
         end
       end
@@ -158,18 +158,18 @@ RSpec.describe Utanone::Uta do
         it '修正する形態素が連続する部分のよみがなが修正されていない状態のUtaオブジェクトが返却されること' do
           expect(subject.yomigana).to eq 'ゴゼンヨジノトモシビ、アシタヨンジニシュウゴウネ'
           expect(subject.parsed_morphemes).to eq [
-            {:word=>"午前", :ruby=>"ゴゼン", :lexical_category=>"名詞"},
-            {:word=>"四", :ruby=>"ヨ", :lexical_category=>"名詞"},
-            {:word=>"時", :ruby=>"ジ", :lexical_category=>"名詞"},
-            {:word=>"の", :ruby=>"ノ", :lexical_category=>"助詞"},
-            {:word=>"灯", :ruby=>"トモシビ", :lexical_category=>"名詞"},
-            {:word=>"、", :ruby=>"、", :lexical_category=>"記号"},
-            {:word=>"明日", :ruby=>"アシタ", :lexical_category=>"名詞"},
-            {:word=>"四", :ruby=>"ヨン", :lexical_category=>"名詞"},
-            {:word=>"時", :ruby=>"ジ", :lexical_category=>"名詞"},
-            {:word=>"に", :ruby=>"ニ", :lexical_category=>"助詞"},
-            {:word=>"集合", :ruby=>"シュウゴウ", :lexical_category=>"名詞"},
-            {:word=>"ね", :ruby=>"ネ", :lexical_category=>"助詞"}
+            { word: '午前', ruby: 'ゴゼン', lexical_category: '名詞' },
+            { word: '四', ruby: 'ヨ', lexical_category: '名詞' },
+            { word: '時', ruby: 'ジ', lexical_category: '名詞' },
+            { word: 'の', ruby: 'ノ', lexical_category: '助詞' },
+            { word: '灯', ruby: 'トモシビ', lexical_category: '名詞' },
+            { word: '、', ruby: '、', lexical_category: '記号' },
+            { word: '明日', ruby: 'アシタ', lexical_category: '名詞' },
+            { word: '四', ruby: 'ヨン', lexical_category: '名詞' },
+            { word: '時', ruby: 'ジ', lexical_category: '名詞' },
+            { word: 'に', ruby: 'ニ', lexical_category: '助詞' },
+            { word: '集合', ruby: 'シュウゴウ', lexical_category: '名詞' },
+            { word: 'ね', ruby: 'ネ', lexical_category: '助詞' }
           ]
         end
 
@@ -177,18 +177,18 @@ RSpec.describe Utanone::Uta do
           subject
           expect(uta.yomigana).to eq 'ゴゼンヨンジノアカリ、アシタヨンジニシュウゴウネ'
           expect(uta.parsed_morphemes).to eq [
-            {:word=>"午前", :ruby=>"ゴゼン", :lexical_category=>"名詞"},
-            {:word=>"四", :ruby=>"ヨン", :lexical_category=>"名詞"},
-            {:word=>"時", :ruby=>"ジ", :lexical_category=>"名詞"},
-            {:word=>"の", :ruby=>"ノ", :lexical_category=>"助詞"},
-            {:word=>"灯", :ruby=>"アカリ", :lexical_category=>"名詞"},
-            {:word=>"、", :ruby=>"、", :lexical_category=>"記号"},
-            {:word=>"明日", :ruby=>"アシタ", :lexical_category=>"名詞"},
-            {:word=>"四", :ruby=>"ヨン", :lexical_category=>"名詞"},
-            {:word=>"時", :ruby=>"ジ", :lexical_category=>"名詞"},
-            {:word=>"に", :ruby=>"ニ", :lexical_category=>"助詞"},
-            {:word=>"集合", :ruby=>"シュウゴウ", :lexical_category=>"名詞"},
-            {:word=>"ね", :ruby=>"ネ", :lexical_category=>"助詞"}
+            { word: '午前', ruby: 'ゴゼン', lexical_category: '名詞' },
+            { word: '四', ruby: 'ヨン', lexical_category: '名詞' },
+            { word: '時', ruby: 'ジ', lexical_category: '名詞' },
+            { word: 'の', ruby: 'ノ', lexical_category: '助詞' },
+            { word: '灯', ruby: 'アカリ', lexical_category: '名詞' },
+            { word: '、', ruby: '、', lexical_category: '記号' },
+            { word: '明日', ruby: 'アシタ', lexical_category: '名詞' },
+            { word: '四', ruby: 'ヨン', lexical_category: '名詞' },
+            { word: '時', ruby: 'ジ', lexical_category: '名詞' },
+            { word: 'に', ruby: 'ニ', lexical_category: '助詞' },
+            { word: '集合', ruby: 'シュウゴウ', lexical_category: '名詞' },
+            { word: 'ね', ruby: 'ネ', lexical_category: '助詞' }
           ]
         end
       end
