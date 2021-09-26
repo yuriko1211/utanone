@@ -57,24 +57,81 @@ RSpec.describe Utanone::Uta do
   describe '#correct'do
     subject { uta.correct(corrected_yomigana: corrected_yomigana) }
 
-    context 'よみがなが訂正されている場合' do
-      # MeCubによるよみがなは "ゴゼンヨンジノアカリ"
-      let(:str) { '午前四時の灯' }
-      let(:corrected_yomigana) { 'ゴゼンヨジノトモシビ' }
+    context 'よみがなが修正されている場合' do
+      context '修正する形態素が連続していない場合' do
+        # MeCubによるよみがなは "ゴゼンヨンジノアカリ"
+        let(:str) { '午前四時の灯' }
+        let(:corrected_yomigana) { 'ゴゼンヨジノトモシビ' }
 
-      it '訂正された読みが保存されること' do
-        expect(subject.yomigana).to eq 'ゴゼンヨジノトモシビ'
-        expect(subject.parsed_morphemes).to eq [
-          {:word=>"午前", :ruby=>"ゴゼン", :lexical_category=>"名詞"},
-          {:word=>"四", :ruby=>"ヨ", :lexical_category=>"名詞"},
-          {:word=>"時", :ruby=>"ジ", :lexical_category=>"名詞"},
-          {:word=>"の", :ruby=>"ノ", :lexical_category=>"助詞"},
-          {:word=>"灯", :ruby=>"トモシビ", :lexical_category=>"名詞"}
-        ]
+        it 'よみがなが修正された状態のUtaオブジェクトが返却されること' do
+          expect(subject.yomigana).to eq 'ゴゼンヨジノトモシビ'
+          expect(subject.parsed_morphemes).to eq [
+            {:word=>"午前", :ruby=>"ゴゼン", :lexical_category=>"名詞"},
+            {:word=>"四", :ruby=>"ヨ", :lexical_category=>"名詞"},
+            {:word=>"時", :ruby=>"ジ", :lexical_category=>"名詞"},
+            {:word=>"の", :ruby=>"ノ", :lexical_category=>"助詞"},
+            {:word=>"灯", :ruby=>"トモシビ", :lexical_category=>"名詞"}
+          ]
+        end
+
+        it '元のUtaオブジェクトに変更がないこと' do
+          subject
+          expect(uta.yomigana).to eq 'ゴゼンヨンジノアカリ'
+          expect(uta.parsed_morphemes).to eq [
+            {:word=>"午前", :ruby=>"ゴゼン", :lexical_category=>"名詞"},
+            {:word=>"四", :ruby=>"ヨン", :lexical_category=>"名詞"},
+            {:word=>"時", :ruby=>"ジ", :lexical_category=>"名詞"},
+            {:word=>"の", :ruby=>"ノ", :lexical_category=>"助詞"},
+            {:word=>"灯", :ruby=>"アカリ", :lexical_category=>"名詞"}
+          ]
+        end
+      end
+
+      context '修正する形態素が連続している場合' do
+        # MeCubによるよみがなは "ゴゼンヨンジノアカリ、アシタヨンジニシュウゴウネ"
+        let(:str) { '午前四時の灯、明日四時に集合ね' }
+        let(:corrected_yomigana) { 'ゴゼンヨジノトモシビ、アスヨジにシュウゴウネ' }
+
+        it '修正する形態素が連続する部分のよみがなが修正されていない状態のUtaオブジェクトが返却されること' do
+          expect(subject.yomigana).to eq 'ゴゼンヨジノトモシビ、アシタヨンジニシュウゴウネ'
+          expect(subject.parsed_morphemes).to eq [
+            {:word=>"午前", :ruby=>"ゴゼン", :lexical_category=>"名詞"},
+            {:word=>"四", :ruby=>"ヨ", :lexical_category=>"名詞"},
+            {:word=>"時", :ruby=>"ジ", :lexical_category=>"名詞"},
+            {:word=>"の", :ruby=>"ノ", :lexical_category=>"助詞"},
+            {:word=>"灯", :ruby=>"トモシビ", :lexical_category=>"名詞"},
+            {:word=>"、", :ruby=>"、", :lexical_category=>"記号"},
+            {:word=>"明日", :ruby=>"アシタ", :lexical_category=>"名詞"},
+            {:word=>"四", :ruby=>"ヨン", :lexical_category=>"名詞"},
+            {:word=>"時", :ruby=>"ジ", :lexical_category=>"名詞"},
+            {:word=>"に", :ruby=>"ニ", :lexical_category=>"助詞"},
+            {:word=>"集合", :ruby=>"シュウゴウ", :lexical_category=>"名詞"},
+            {:word=>"ね", :ruby=>"ネ", :lexical_category=>"助詞"}
+          ]
+        end
+
+        it '元のUtaオブジェクトに変更がないこと' do
+          subject
+          expect(uta.yomigana).to eq 'ゴゼンヨンジノアカリ、アシタヨンジニシュウゴウネ'
+          expect(uta.parsed_morphemes).to eq [
+            {:word=>"午前", :ruby=>"ゴゼン", :lexical_category=>"名詞"},
+            {:word=>"四", :ruby=>"ヨン", :lexical_category=>"名詞"},
+            {:word=>"時", :ruby=>"ジ", :lexical_category=>"名詞"},
+            {:word=>"の", :ruby=>"ノ", :lexical_category=>"助詞"},
+            {:word=>"灯", :ruby=>"アカリ", :lexical_category=>"名詞"},
+            {:word=>"、", :ruby=>"、", :lexical_category=>"記号"},
+            {:word=>"明日", :ruby=>"アシタ", :lexical_category=>"名詞"},
+            {:word=>"四", :ruby=>"ヨン", :lexical_category=>"名詞"},
+            {:word=>"時", :ruby=>"ジ", :lexical_category=>"名詞"},
+            {:word=>"に", :ruby=>"ニ", :lexical_category=>"助詞"},
+            {:word=>"集合", :ruby=>"シュウゴウ", :lexical_category=>"名詞"},
+            {:word=>"ね", :ruby=>"ネ", :lexical_category=>"助詞"}
+          ]
+        end
       end
     end
 
-    context 'よみがなが訂正されていない場合' do
+    context 'よみがなが修正されていない場合' do
       # MeCubによるよみがなは "ゴゼンヨンジノアカリ"
       let(:str) { '午前四時の灯' }
       let(:corrected_yomigana) { 'ゴゼンヨンジノアカリ' }
