@@ -1,5 +1,11 @@
 AllCops:
-  TargetRubyVersion: 3.1
+  Exclude:
+    - Gemfile
+    - "*.md"
+    - "*.text"
+    - utanone.gemspec
+    - "bin/*"
+    - Rakefile
 
 Style/StringLiterals:
   Enabled: true
