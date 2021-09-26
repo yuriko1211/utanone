@@ -103,7 +103,7 @@ module Utanone
 
     def conversion_number(str)
       # 半角数字を全角数字にしないと読みが取れないので変換する
-      original_str.tr("0-9a-zA-Z", "０-９ａ-ｚＡ-Ｚ")
+      str.tr("0-9a-zA-Z", "０-９ａ-ｚＡ-Ｚ")
     end
 
     def natto
