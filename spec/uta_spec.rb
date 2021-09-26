@@ -3,20 +3,83 @@ RSpec.describe Utanone::Uta do
   let(:str) { 'あっつい夏の日、3時にアイスクリームを食べちゃったね' }
 
   describe 'initialize' do
-    subject { Utanone::Uta.new(str) }
+    let(:str) { '一千年眠った明日を見てみたい太陽以外みな新しい' }
 
-    context '正常にパースできたとき' do
-      it 'インスタンスが生成される' do
-        is_expected.to be_truthy
+    context 'ref_utaが引数として渡されないとき' do
+      subject { Utanone::Uta.new(str) }
+
+      context '正常にパースできたとき' do
+        it 'インスタンスが生成される' do
+          is_expected.to be_truthy
+        end
+
+        it 'parsed_morphemes の値が期待通りであること' do
+          expect(subject.parsed_morphemes).to eq [
+            {:word=>"一", :ruby=>"イチ", :lexical_category=>"名詞"},
+            {:word=>"千", :ruby=>"セン", :lexical_category=>"名詞"},
+            {:word=>"年", :ruby=>"ネン", :lexical_category=>"名詞"},
+            {:word=>"眠っ", :ruby=>"ネムッ", :lexical_category=>"動詞"},
+            {:word=>"た", :ruby=>"タ", :lexical_category=>"助動詞"},
+            {:word=>"明日", :ruby=>"アシタ", :lexical_category=>"名詞"},
+            {:word=>"を", :ruby=>"ヲ", :lexical_category=>"助詞"},
+            {:word=>"見", :ruby=>"ミ", :lexical_category=>"動詞"},
+            {:word=>"て", :ruby=>"テ", :lexical_category=>"助詞"},
+            {:word=>"み", :ruby=>"ミ", :lexical_category=>"動詞"},
+            {:word=>"たい", :ruby=>"タイ", :lexical_category=>"助動詞"},
+            {:word=>"太陽", :ruby=>"タイヨウ", :lexical_category=>"名詞"},
+            {:word=>"以外", :ruby=>"イガイ", :lexical_category=>"名詞"},
+            {:word=>"みな", :ruby=>"ミナ", :lexical_category=>"名詞"},
+            {:word=>"新しい", :ruby=>"アタラシイ", :lexical_category=>"形容詞"}
+          ]
+        end
+      end
+
+      context 'Natto::MeCabError が発生したとき' do
+        it 'Utanone::ParseError がraiseされる' do
+          natto_mock = double('natto_mock')
+          allow(natto_mock).to receive(:enum_parse).and_raise(Natto::MeCabError)
+          allow(Natto::MeCab).to receive(:new).and_return(natto_mock)
+          expect{ subject }.to raise_error(Utanone::ParseError)
+        end
       end
     end
 
-    context 'Natto::MeCabError が発生したとき' do
-      it 'Utanone::ParseError がraiseされる' do
-        natto_mock = double('natto_mock')
-        allow(natto_mock).to receive(:enum_parse).and_raise(Natto::MeCabError)
-        allow(Natto::MeCab).to receive(:new).and_return(natto_mock)
-        expect{ subject }.to raise_error(Utanone::ParseError)
+    context 'ref_utaが引数として渡されとき' do
+      subject { Utanone::Uta.new(str, ref_uta) }
+
+      # 読みの修正箇所
+      # 1. "アシタ" => "アス"
+      # 2. "イチ" => "イッ"
+      let!(:ref_uta_original) { Utanone::Uta.new('明日のその先一千年後の星は瞬く') }
+      let!(:ref_uta) { ref_uta_original.correct(corrected_yomigana: 'アスノソノサキイッセンネンゴノホシハマタタク')}
+
+      context '正常にパースできたとき' do
+        it 'インスタンスが生成される' do
+          is_expected.to be_truthy
+        end
+
+        it 'parsed_morphemes の値が期待通りであること' do
+          # 修正した下記の読みが適用されている
+          # 1. "アシタ" => "アス"
+          # 2. "イチ" => "イッ"
+          expect(subject.parsed_morphemes).to eq [
+            {:word=>"一", :ruby=>"イッ", :lexical_category=>"名詞"},
+            {:word=>"千", :ruby=>"セン", :lexical_category=>"名詞"},
+            {:word=>"年", :ruby=>"ネン", :lexical_category=>"名詞"},
+            {:word=>"眠っ", :ruby=>"ネムッ", :lexical_category=>"動詞"},
+            {:word=>"た", :ruby=>"タ", :lexical_category=>"助動詞"},
+            {:word=>"明日", :ruby=>"アス", :lexical_category=>"名詞"},
+            {:word=>"を", :ruby=>"ヲ", :lexical_category=>"助詞"},
+            {:word=>"見", :ruby=>"ミ", :lexical_category=>"動詞"},
+            {:word=>"て", :ruby=>"テ", :lexical_category=>"助詞"},
+            {:word=>"み", :ruby=>"ミ", :lexical_category=>"動詞"},
+            {:word=>"たい", :ruby=>"タイ", :lexical_category=>"助動詞"},
+            {:word=>"太陽", :ruby=>"タイヨウ", :lexical_category=>"名詞"},
+            {:word=>"以外", :ruby=>"イガイ", :lexical_category=>"名詞"},
+            {:word=>"みな", :ruby=>"ミナ", :lexical_category=>"名詞"},
+            {:word=>"新しい", :ruby=>"アタラシイ", :lexical_category=>"形容詞"}
+          ]
+        end
       end
     end
 
