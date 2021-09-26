@@ -22,5 +22,13 @@ Metrics/MethodLength:
   Enabled: true
   Max: 20
 
+Metrics/CyclomaticComplexity:
+  Enabled: true
+  Max: 8
+
+Metrics/AbcSize:
+  Enabled: true
+  Max: 20
+
 Documentation:
   Enabled: false
