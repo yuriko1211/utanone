@@ -31,7 +31,7 @@ module Utanone
       count_size
     end
 
-    def correct(correct_yomigana:)
+    def correct(correct_yomigana:) # rubocop:disable Metrics/AbcSize
       return self if yomigana == correct_yomigana
 
       # 訂正したよみがなで再作成したUtaインスタンスを作成するので、一旦コピーする
