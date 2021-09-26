@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'natto'
 module Utanone
   class Uta
     attr_reader :original_str, :parsed_morphemes
 
     EXCLUDING_COUNTING_RUBY_BY_TANKA = /ァ|ィ|ォ|ャ|ュ|ョ/
-    EXCLUDING_COUNTING_LEXICAL_CATEGORIES = %w(記号)
+    EXCLUDING_COUNTING_LEXICAL_CATEGORIES = %w[記号].freeze
 
     def initialize(str, ref_uta = nil)
       @original_str = str
@@ -33,18 +35,18 @@ module Utanone
       return self if yomigana == corrected_yomigana
 
       # 訂正したよみがなで再作成したUtaインスタンスを作成するので、一旦コピーする
-      corrected_uta = Uta.new(self.original_str)
+      corrected_uta = Uta.new(@original_str)
 
       corrected_uta.parsed_morphemes.each_with_index do |morpheme, i|
         # 形態素ごとによみがなの修正が必要であれば修正する
-        if corrected_yomigana[0,morpheme[:ruby].size] == morpheme[:ruby]
+        if corrected_yomigana[0, morpheme[:ruby].size] == morpheme[:ruby]
           # よみがなが一致したらそのまま処理を続行する
           # 比較したよみがな部分は訂正済みよみがなから削除する
           corrected_yomigana.slice!(0, morpheme[:ruby].size)
           next
         else
           # よみがなが不一致なら修正する
-          next_morpheme = corrected_uta.parsed_morphemes[i+1]
+          next_morpheme = corrected_uta.parsed_morphemes[i + 1]
           if next_morpheme
             # 修正済みよみがなから次の形態素に一致する箇所を探すことで修正したい形態素のよみがなを取得する
             next_morpheme_start = corrected_yomigana.index(next_morpheme[:ruby])
@@ -84,9 +86,8 @@ module Utanone
         if ref_uta
           # ref_utaとして参照するUtaオブジェクトが渡されている場合は読みを参照するUtaオブジェクトから取得する
           ref_morpheme = ref_uta.parsed_morphemes.find { |morpheme| morpheme[:word] == word }
-          if ref_morpheme
-            ruby = ref_morpheme[:ruby]
-          end
+
+          ruby = ref_morpheme[:ruby] if ref_morpheme
         end
 
         raise Utanone::ParseError unless ruby
@@ -97,13 +98,13 @@ module Utanone
           lexical_category: lexical_category
         }
       end
-    rescue Natto::MeCabError => e
+    rescue Natto::MeCabError
       raise Utanone::ParseError
     end
 
     def conversion_number(str)
       # 半角数字を全角数字にしないと読みが取れないので変換する
-      str.tr("0-9a-zA-Z", "０-９ａ-ｚＡ-Ｚ")
+      str.tr('0-9a-zA-Z', '０-９ａ-ｚＡ-Ｚ')
     end
 
     def natto
