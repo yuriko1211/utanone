@@ -39,7 +39,7 @@ RSpec.describe Utanone::Uta do
           natto_mock = double('natto_mock')
           allow(natto_mock).to receive(:enum_parse).and_raise(Natto::MeCabError)
           allow(Natto::MeCab).to receive(:new).and_return(natto_mock)
-          expect{ subject }.to raise_error(Utanone::ParseError)
+          expect { subject }.to raise_error(Utanone::ParseError)
         end
       end
     end
@@ -51,7 +51,7 @@ RSpec.describe Utanone::Uta do
       # 1. "アシタ" => "アス"
       # 2. "イチ" => "イッ"
       let!(:ref_uta_original) { Utanone::Uta.new('明日のその先一千年後の星は瞬く') }
-      let!(:ref_uta) { ref_uta_original.correct(correct_yomigana: 'アスノソノサキイッセンネンゴノホシハマタタク')}
+      let!(:ref_uta) { ref_uta_original.correct(correct_yomigana: 'アスノソノサキイッセンネンゴノホシハマタタク') }
 
       context '正常にパースできたとき' do
         it 'インスタンスが生成される' do
@@ -86,7 +86,7 @@ RSpec.describe Utanone::Uta do
     # TODO: ルビが取得できなかったパターンのテストを追加したい
   end
 
-  describe '#yomigana'do
+  describe '#yomigana' do
     subject { uta.yomigana }
 
     it { is_expected.to eq 'アッツイナツノヒ、サンジニアイスクリームヲタベチャッタネ' }
@@ -97,7 +97,7 @@ RSpec.describe Utanone::Uta do
     end
   end
 
-  describe '#count'do
+  describe '#count' do
     subject { uta.count(tanka: tanka_option) }
 
     context 'tankaがfalseのとき' do
@@ -117,7 +117,7 @@ RSpec.describe Utanone::Uta do
     end
   end
 
-  describe '#correct'do
+  describe '#correct' do
     subject { uta.correct(correct_yomigana: correct_yomigana) }
 
     context 'よみがなが修正されている場合' do
