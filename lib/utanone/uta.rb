@@ -68,6 +68,7 @@ module Utanone
     end
 
     private
+
     def parse_to_hash(str, ref_uta)
       parsed_str_enum = natto.enum_parse(conversion_number(str))
 
@@ -85,7 +86,6 @@ module Utanone
         if ref_uta
           # ref_utaとして参照するUtaオブジェクトが渡されている場合は読みを参照するUtaオブジェクトから取得する
           ref_morpheme = ref_uta.parsed_morphemes.find { |morpheme| morpheme[:word] == word }
-
           ruby = ref_morpheme[:ruby] if ref_morpheme
         end
 
