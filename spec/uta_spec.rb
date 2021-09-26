@@ -51,7 +51,7 @@ RSpec.describe Utanone::Uta do
       # 1. "アシタ" => "アス"
       # 2. "イチ" => "イッ"
       let!(:ref_uta_original) { Utanone::Uta.new('明日のその先一千年後の星は瞬く') }
-      let!(:ref_uta) { ref_uta_original.correct(corrected_yomigana: 'アスノソノサキイッセンネンゴノホシハマタタク')}
+      let!(:ref_uta) { ref_uta_original.correct(correct_yomigana: 'アスノソノサキイッセンネンゴノホシハマタタク')}
 
       context '正常にパースできたとき' do
         it 'インスタンスが生成される' do
@@ -118,13 +118,13 @@ RSpec.describe Utanone::Uta do
   end
 
   describe '#correct'do
-    subject { uta.correct(corrected_yomigana: corrected_yomigana) }
+    subject { uta.correct(correct_yomigana: correct_yomigana) }
 
     context 'よみがなが修正されている場合' do
       context '修正する形態素が連続していない場合' do
         # MeCubによるよみがなは "ゴゼンヨンジノアカリ"
         let(:str) { '午前四時の灯' }
-        let(:corrected_yomigana) { 'ゴゼンヨジノトモシビ' }
+        let(:correct_yomigana) { 'ゴゼンヨジノトモシビ' }
 
         it 'よみがなが修正された状態のUtaオブジェクトが返却されること' do
           expect(subject.yomigana).to eq 'ゴゼンヨジノトモシビ'
@@ -153,7 +153,7 @@ RSpec.describe Utanone::Uta do
       context '修正する形態素が連続している場合' do
         # MeCubによるよみがなは "ゴゼンヨンジノアカリ、アシタヨンジニシュウゴウネ"
         let(:str) { '午前四時の灯、明日四時に集合ね' }
-        let(:corrected_yomigana) { 'ゴゼンヨジノトモシビ、アスヨジにシュウゴウネ' }
+        let(:correct_yomigana) { 'ゴゼンヨジノトモシビ、アスヨジにシュウゴウネ' }
 
         it '修正する形態素が連続する部分のよみがなが修正されていない状態のUtaオブジェクトが返却されること' do
           expect(subject.yomigana).to eq 'ゴゼンヨジノトモシビ、アシタヨンジニシュウゴウネ'
@@ -197,7 +197,7 @@ RSpec.describe Utanone::Uta do
     context 'よみがなが修正されていない場合' do
       # MeCubによるよみがなは "ゴゼンヨンジノアカリ"
       let(:str) { '午前四時の灯' }
-      let(:corrected_yomigana) { 'ゴゼンヨンジノアカリ' }
+      let(:correct_yomigana) { 'ゴゼンヨンジノアカリ' }
 
       it '元のUtaオブジェクトが返却されること' do
         expect(subject).to eq uta
