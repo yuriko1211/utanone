@@ -6,9 +6,9 @@ module Utanone
     EXCLUDING_COUNTING_RUBY_BY_TANKA = /ァ|ィ|ォ|ャ|ュ|ョ/
     EXCLUDING_COUNTING_LEXICAL_CATEGORIES = %w(記号)
 
-    def initialize(str)
+    def initialize(str, ref_uta = nil)
       @original_str = str
-      @parsed_morphemes = parse_to_hash(str)
+      @parsed_morphemes = parse_to_hash(str, ref_uta)
     end
 
     def yomigana
@@ -67,11 +67,12 @@ module Utanone
     end
 
     private
-    def parse_to_hash(str)
+    def parse_to_hash(str, ref_uta)
       parsed_str_enum = natto.enum_parse(conversion_number(str))
 
       parsed_str_enum.each_with_object([]) do |result, array|
         next if result.is_eos?
+
         # 形態素
         word = result.surface
         splited_result = result.feature.split(/\t|,/)
@@ -79,6 +80,14 @@ module Utanone
         lexical_category = splited_result[0]
         # 読み
         ruby = splited_result[7]
+
+        if ref_uta
+          # ref_utaとして参照するUtaオブジェクトが渡されている場合は読みを参照するUtaオブジェクトから取得する
+          ref_morpheme = ref_uta.parsed_morphemes.find { |morpheme| morpheme[:word] == word }
+          if ref_morpheme
+            ruby = ref_morpheme[:ruby]
+          end
+        end
 
         raise Utanone::ParseError unless ruby
 
