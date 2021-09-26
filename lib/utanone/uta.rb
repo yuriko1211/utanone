@@ -37,10 +37,10 @@ module Utanone
 
       # 文字列を比較して最初に一致しない箇所のインデックスを抽出する（例: 2..3 ）
       corrected_uta.parsed_morphemes.each_with_index do |morpheme, i|
-        if corrected_yomigana[0,morpheme[:ruby_size]] == morpheme[:ruby]
+        if corrected_yomigana[0,morpheme[:ruby].size] == morpheme[:ruby]
           # 形態素のよみがなと訂正済みよみがなが一致したらそのまま処理を続行する
           # 比較したよみがな部分は訂正済みよみがなから削除する
-          corrected_yomigana.slice!(0, morpheme[:ruby_size])
+          corrected_yomigana.slice!(0, morpheme[:ruby].size)
           next
         else
           # 形態素のよみがなと訂正済みよみがなが一致しなかったら訂正する
@@ -51,16 +51,14 @@ module Utanone
             if next_morpheme_start
               # 次の形態素の一致箇所があれば訂正する
               morpheme[:ruby] = corrected_yomigana[0, next_morpheme_start]
-              morpheme[:ruby_size] = morpheme[:ruby].size
             else
               # 一致箇所がなければ訂正ができないものとして処理を中断する
               break
             end
-            corrected_yomigana.slice!(0, morpheme[:ruby_size])
+            corrected_yomigana.slice!(0, morpheme[:ruby].size)
           else
             # 最後の形態素だった時
             morpheme[:ruby] = corrected_yomigana
-            morpheme[:ruby_size] = morpheme[:ruby].size
           end
         end
       end
@@ -86,8 +84,7 @@ module Utanone
         array << {
           word: word,
           ruby: ruby,
-          lexical_category: lexical_category,
-          ruby_size: ruby.size
+          lexical_category: lexical_category
         }
       end
     rescue Natto::MeCabError => e
