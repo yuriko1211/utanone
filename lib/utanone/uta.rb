@@ -75,27 +75,17 @@ module Utanone
       parsed_str_enum.each_with_object([]) do |result, array|
         next if result.is_eos?
 
-        # 形態素
-        word = result.surface
-        splited_result = result.feature.split(/\t|,/)
-        # 品詞
-        lexical_category = splited_result[0]
-        # 読み
-        ruby = splited_result[7]
+        morpheme = separated_element(result)
 
         if ref_uta
           # ref_utaとして参照するUtaオブジェクトが渡されている場合は読みを参照するUtaオブジェクトから取得する
-          ref_morpheme = ref_uta.parsed_morphemes.find { |morpheme| morpheme[:word] == word }
-          ruby = ref_morpheme[:ruby] if ref_morpheme
+          ref_morpheme = ref_uta.parsed_morphemes.find { _1[:word] == morpheme[:word] }
+          morpheme[:ruby] = ref_morpheme[:ruby] if ref_morpheme
         end
 
-        raise Utanone::ParseError unless ruby
+        raise Utanone::ParseError unless morpheme[:ruby]
 
-        array << {
-          word: word,
-          ruby: ruby,
-          lexical_category: lexical_category
-        }
+        array << morpheme
       end
     rescue Natto::MeCabError
       raise Utanone::ParseError
@@ -104,6 +94,25 @@ module Utanone
     def conversion_number(str)
       # 半角数字を全角数字にしないと読みが取れないので変換する
       str.tr('0-9a-zA-Z', '０-９ａ-ｚＡ-Ｚ')
+    end
+
+    def separated_element(result)
+      # 形態素
+      word = result.surface
+
+      splited_result = result.feature.split(/\t|,/)
+
+      # 品詞
+      lexical_category = splited_result[0]
+
+      # 読み
+      ruby = splited_result[7]
+
+      {
+        word: word,
+        ruby: ruby,
+        lexical_category: lexical_category
+      }
     end
 
     def natto
