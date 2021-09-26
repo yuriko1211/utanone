@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.describe Utanone::Uta do
   let(:uta) { Utanone::Uta.new(str) }
   let(:str) { 'あっつい夏の日、3時にアイスクリームを食べちゃったね' }
@@ -52,6 +50,37 @@ RSpec.describe Utanone::Uta do
 
       it 'よみがなの文字数から発音しない記号の文字数を引いた数に対してさらに「ァ|ィ|ォ|ャ|ュ|ョ」を除外した文字数を返す' do
         is_expected.to be 26
+      end
+    end
+  end
+
+  describe '#correct'do
+    subject { uta.correct(corrected_yomigana: corrected_yomigana) }
+
+    context 'よみがなが訂正されている場合' do
+      # MeCubによるよみがなは "ゴゼンヨンジノアカリ"
+      let(:str) { '午前四時の灯' }
+      let(:corrected_yomigana) { 'ゴゼンヨジノトモシビ' }
+
+      it '訂正された読みが保存されること' do
+        expect(subject.yomigana).to eq 'ゴゼンヨジノトモシビ'
+        expect(subject.parsed_str).to eq [
+          {:word=>"午前", :ruby=>"ゴゼン", :lexical_category=>"名詞", :ruby_size=>3},
+          {:word=>"四", :ruby=>"ヨ", :lexical_category=>"名詞", :ruby_size=>1},
+          {:word=>"時", :ruby=>"ジ", :lexical_category=>"名詞", :ruby_size=>1},
+          {:word=>"の", :ruby=>"ノ", :lexical_category=>"助詞", :ruby_size=>1},
+          {:word=>"灯", :ruby=>"トモシビ", :lexical_category=>"名詞", :ruby_size=>4}
+        ]
+      end
+    end
+
+    context 'よみがなが訂正されていない場合' do
+      # MeCubによるよみがなは "ゴゼンヨンジノアカリ"
+      let(:str) { '午前四時の灯' }
+      let(:corrected_yomigana) { 'ゴゼンヨンジノアカリ' }
+
+      it '元のUtaオブジェクトが返却されること' do
+        expect(subject).to eq uta
       end
     end
   end
