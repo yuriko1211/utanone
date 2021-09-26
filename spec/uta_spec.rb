@@ -64,7 +64,7 @@ RSpec.describe Utanone::Uta do
 
       it '訂正された読みが保存されること' do
         expect(subject.yomigana).to eq 'ゴゼンヨジノトモシビ'
-        expect(subject.parsed_str).to eq [
+        expect(subject.parsed_morphemes).to eq [
           {:word=>"午前", :ruby=>"ゴゼン", :lexical_category=>"名詞", :ruby_size=>3},
           {:word=>"四", :ruby=>"ヨ", :lexical_category=>"名詞", :ruby_size=>1},
           {:word=>"時", :ruby=>"ジ", :lexical_category=>"名詞", :ruby_size=>1},
