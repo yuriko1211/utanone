@@ -35,24 +35,25 @@ module Utanone
       # 訂正したよみがなで再作成したUtaインスタンスを作成するので、一旦コピーする
       corrected_uta = Uta.new(self.original_str)
 
-      # 文字列を比較して最初に一致しない箇所のインデックスを抽出する（例: 2..3 ）
       corrected_uta.parsed_morphemes.each_with_index do |morpheme, i|
+        # 形態素ごとによみがなの修正が必要であれば修正する
         if corrected_yomigana[0,morpheme[:ruby].size] == morpheme[:ruby]
-          # 形態素のよみがなと訂正済みよみがなが一致したらそのまま処理を続行する
+          # よみがなが一致したらそのまま処理を続行する
           # 比較したよみがな部分は訂正済みよみがなから削除する
           corrected_yomigana.slice!(0, morpheme[:ruby].size)
           next
         else
-          # 形態素のよみがなと訂正済みよみがなが一致しなかったら訂正する
+          # よみがなが不一致なら修正する
           next_morpheme = corrected_uta.parsed_morphemes[i+1]
           if next_morpheme
-            # 次の形態素が一致する箇所判定する
+            # 修正済みよみがなから次の形態素に一致する箇所を探すことで修正したい形態素のよみがなを取得する
             next_morpheme_start = corrected_yomigana.index(next_morpheme[:ruby])
             if next_morpheme_start
-              # 次の形態素の一致箇所があれば訂正する
+              # 取得できた場合は修正する
               morpheme[:ruby] = corrected_yomigana[0, next_morpheme_start]
             else
-              # 一致箇所がなければ訂正ができないものとして処理を中断する
+              # 一致箇所がなければ修正ができないものとして処理を中断する（よみがな不一致が連続すると修正できない）
+              # TODO: 再帰を使って連続したよみがな不一致も修正できないか
               break
             end
             corrected_yomigana.slice!(0, morpheme[:ruby].size)
