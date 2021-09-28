@@ -21,6 +21,9 @@ Style/ConditionalAssignment:
 Style/AsciiComments:
   Enabled: false
 
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
 Layout/LineLength:
   Max: 150
 
@@ -35,6 +38,9 @@ Metrics/CyclomaticComplexity:
 Metrics/AbcSize:
   Enabled: true
   Max: 20
+
+Metrics/BlockLength:
+  Enabled: false
 
 Documentation:
   Enabled: false
