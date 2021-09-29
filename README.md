@@ -6,6 +6,7 @@ Utanone(歌の音) is a helper for creating tanka/haiku poems in Japanese.
 
 ## Requirements
 - [MeCab 0.996](http://taku910.github.io/mecab/)
+  - MeCabのインストールは [mecab](https://github.com/markburns/mecab)を参考にしてください
 - Ruby 2.7 or greater
 
 ## Installation
