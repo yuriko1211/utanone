@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description   = "Utanone is a helper that counts the number of sounds in Japanese sentences."
   spec.homepage      = "https://github.com/yuriko1211/utanone"
   spec.license       = "MIT"
-  spec.required_ruby_version = ">= 2.4.0"
+  spec.required_ruby_version = ">= 2.7.0"
 
   spec.metadata["allowed_push_host"] = "TODO: Set to 'https://mygemserver.com'"
 

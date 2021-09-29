@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'natto'
 module Utanone
   class Uta
     attr_reader :original_str, :parsed_morphemes
 
     EXCLUDING_COUNTING_RUBY_BY_TANKA = /ァ|ィ|ォ|ャ|ュ|ョ/
-    EXCLUDING_COUNTING_LEXICAL_CATEGORIES = %w(記号)
+    EXCLUDING_COUNTING_LEXICAL_CATEGORIES = %w[記号].freeze
 
     def initialize(str, ref_uta = nil)
       @original_str = str
@@ -29,37 +31,36 @@ module Utanone
       count_size
     end
 
-    def correct(corrected_yomigana:)
-      return self if yomigana == corrected_yomigana
+    def correct(correct_yomigana:) # rubocop:disable Metrics/AbcSize
+      return self if yomigana == correct_yomigana
 
       # 訂正したよみがなで再作成したUtaインスタンスを作成するので、一旦コピーする
-      corrected_uta = Uta.new(self.original_str)
+      corrected_uta = Uta.new(@original_str)
 
       corrected_uta.parsed_morphemes.each_with_index do |morpheme, i|
         # 形態素ごとによみがなの修正が必要であれば修正する
-        if corrected_yomigana[0,morpheme[:ruby].size] == morpheme[:ruby]
+        if correct_yomigana[0, morpheme[:ruby].size] == morpheme[:ruby]
           # よみがなが一致したらそのまま処理を続行する
           # 比較したよみがな部分は訂正済みよみがなから削除する
-          corrected_yomigana.slice!(0, morpheme[:ruby].size)
+          correct_yomigana.slice!(0, morpheme[:ruby].size)
           next
         else
           # よみがなが不一致なら修正する
-          next_morpheme = corrected_uta.parsed_morphemes[i+1]
+          next_morpheme = corrected_uta.parsed_morphemes[i + 1]
           if next_morpheme
             # 修正済みよみがなから次の形態素に一致する箇所を探すことで修正したい形態素のよみがなを取得する
-            next_morpheme_start = corrected_yomigana.index(next_morpheme[:ruby])
-            if next_morpheme_start
-              # 取得できた場合は修正する
-              morpheme[:ruby] = corrected_yomigana[0, next_morpheme_start]
-            else
-              # 一致箇所がなければ修正ができないものとして処理を中断する（よみがな不一致が連続すると修正できない）
-              # TODO: 再帰を使って連続したよみがな不一致も修正できないか
-              break
-            end
-            corrected_yomigana.slice!(0, morpheme[:ruby].size)
+            next_morpheme_start = correct_yomigana.index(next_morpheme[:ruby])
+
+            # 一致箇所がなければ修正ができないものとして処理を中断する（よみがな不一致が連続すると修正できない）
+            # TODO: 再帰を使って連続したよみがな不一致も修正できないか
+            break unless next_morpheme_start
+
+            # 取得できた場合は修正する
+            morpheme[:ruby] = correct_yomigana[0, next_morpheme_start]
+            correct_yomigana.slice!(0, morpheme[:ruby].size)
           else
             # 最後の形態素だった時
-            morpheme[:ruby] = corrected_yomigana
+            morpheme[:ruby] = correct_yomigana
           end
         end
       end
@@ -67,43 +68,51 @@ module Utanone
     end
 
     private
+
     def parse_to_hash(str, ref_uta)
       parsed_str_enum = natto.enum_parse(conversion_number(str))
 
       parsed_str_enum.each_with_object([]) do |result, array|
         next if result.is_eos?
 
-        # 形態素
-        word = result.surface
-        splited_result = result.feature.split(/\t|,/)
-        # 品詞
-        lexical_category = splited_result[0]
-        # 読み
-        ruby = splited_result[7]
+        morpheme = separated_element(result)
 
         if ref_uta
           # ref_utaとして参照するUtaオブジェクトが渡されている場合は読みを参照するUtaオブジェクトから取得する
-          ref_morpheme = ref_uta.parsed_morphemes.find { |morpheme| morpheme[:word] == word }
-          if ref_morpheme
-            ruby = ref_morpheme[:ruby]
-          end
+          ref_morpheme = ref_uta.parsed_morphemes.find { _1[:word] == morpheme[:word] }
+          morpheme[:ruby] = ref_morpheme[:ruby] if ref_morpheme
         end
 
-        raise Utanone::ParseError unless ruby
+        raise Utanone::ParseError unless morpheme[:ruby]
 
-        array << {
-          word: word,
-          ruby: ruby,
-          lexical_category: lexical_category
-        }
+        array << morpheme
       end
-    rescue Natto::MeCabError => e
+    rescue Natto::MeCabError
       raise Utanone::ParseError
     end
 
     def conversion_number(str)
       # 半角数字を全角数字にしないと読みが取れないので変換する
-      str.tr("0-9a-zA-Z", "０-９ａ-ｚＡ-Ｚ")
+      str.tr('0-9a-zA-Z', '０-９ａ-ｚＡ-Ｚ')
+    end
+
+    def separated_element(result)
+      # 形態素
+      word = result.surface
+
+      splited_result = result.feature.split(/\t|,/)
+
+      # 品詞
+      lexical_category = splited_result[0]
+
+      # 読み
+      ruby = splited_result[7]
+
+      {
+        word: word,
+        ruby: ruby,
+        lexical_category: lexical_category
+      }
     end
 
     def natto
