@@ -2,7 +2,7 @@
 
 Utanone(歌の音) is a helper for creating tanka/haiku poems in Japanese.
 
-形態素解析エンジンMeCabを使用して、入力した短歌/俳句の音数をカウントします。
+形態素解析エンジン[MeCab](https://taku910.github.io/mecab/)を使用して、入力した短歌/俳句の音数をカウントします。
 
 ## Requirements
 - [MeCab 0.996](http://taku910.github.io/mecab/)
