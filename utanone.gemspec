@@ -33,4 +33,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'natto', '~> 1.2.0'
 
   spec.add_development_dependency 'dotenv'
+  spec.add_development_dependency 'rake', '~> 13.0'
+  spec.add_development_dependency 'rspec', '~> 3.0'
+  spec.add_development_dependency 'rubocop', '~> 1.7'
 end
