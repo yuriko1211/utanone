@@ -85,7 +85,13 @@ module Utanone
           morpheme[:ruby] = ref_morpheme[:ruby] if ref_morpheme
         end
 
-        raise Utanone::ParseError unless morpheme[:ruby]
+        unless morpheme[:ruby]
+          if /\A[ぁ-んァ-ヶー－]+\z/.match?(morpheme[:word])
+            morpheme[:ruby] = convert_kana(morpheme[:word])
+          else
+            raise Utanone::ParseError
+          end
+        end
 
         array << morpheme
       end
