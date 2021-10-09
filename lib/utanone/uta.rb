@@ -70,7 +70,7 @@ module Utanone
     private
 
     def parse_to_hash(str, ref_uta)
-      parsed_str_enum = natto.enum_parse(conversion_number(str))
+      parsed_str_enum = natto.enum_parse(convert_number(str))
 
       parsed_str_enum.each_with_object([]) do |result, array|
         next if result.is_eos?
@@ -91,7 +91,7 @@ module Utanone
       raise Utanone::ParseError
     end
 
-    def conversion_number(str)
+    def convert_number(str)
       # 半角数字を全角数字にしないと読みが取れないので変換する
       str.tr('0-9a-zA-Z', '０-９ａ-ｚＡ-Ｚ')
     end
