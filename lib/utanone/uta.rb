@@ -79,16 +79,7 @@ module Utanone
         next if result.is_eos?
 
         morpheme = separated_element(result)
-
-        if ref_uta
-          # ref_utaとして参照するUtaオブジェクトが渡されている場合は読みを参照するUtaオブジェクトから取得する
-          ref_morpheme = ref_uta.parsed_morphemes.find { _1[:word] == morpheme[:word] }
-          morpheme[:ruby] = ref_morpheme[:ruby] if ref_morpheme
-        end
-
-        unless morpheme[:ruby]
-          morpheme[:ruby] = correct_ruby(morpheme[:ruby])
-        end
+        morpheme[:ruby] = correct_ruby(morpheme, ref_uta)
 
         array << morpheme
       end
@@ -124,10 +115,20 @@ module Utanone
       }
     end
 
-    def correct_ruby(ruby)
-      raise Utanone::ParseError unless HIRAGANA_AND_KATAKANA.match?(ruby)
+    def correct_ruby(morpheme, ref_uta)
+      if ref_uta
+        # ref_utaとして参照するUtaオブジェクトが渡されている場合は読みを参照するUtaオブジェクトから取得する
+        ref_morpheme = ref_uta.parsed_morphemes.find { _1[:word] == morpheme[:word] }
+        morpheme[:ruby] = ref_morpheme[:ruby] if ref_morpheme
+      end
 
-      convert_kana(ruby)
+      if morpheme[:ruby]
+        morpheme[:ruby]
+      else
+        raise Utanone::ParseError unless HIRAGANA_AND_KATAKANA.match?(morpheme[:word])
+
+        convert_kana(morpheme[:word])
+      end
     end
 
     def natto
