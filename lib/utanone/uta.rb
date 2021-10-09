@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'nkf'
 require 'natto'
 module Utanone
   class Uta
@@ -32,35 +33,36 @@ module Utanone
     end
 
     def correct(correct_yomigana:) # rubocop:disable Metrics/AbcSize
-      return self if yomigana == correct_yomigana
+      converted_correct_yomigana = convert_kana(correct_yomigana)
+      return self if yomigana == converted_correct_yomigana
 
       # 訂正したよみがなで再作成したUtaインスタンスを作成するので、一旦コピーする
       corrected_uta = Uta.new(@original_str)
 
       corrected_uta.parsed_morphemes.each_with_index do |morpheme, i|
         # 形態素ごとによみがなの修正が必要であれば修正する
-        if correct_yomigana[0, morpheme[:ruby].size] == morpheme[:ruby]
+        if converted_correct_yomigana[0, morpheme[:ruby].size] == morpheme[:ruby]
           # よみがなが一致したらそのまま処理を続行する
           # 比較したよみがな部分は訂正済みよみがなから削除する
-          correct_yomigana.slice!(0, morpheme[:ruby].size)
+          converted_correct_yomigana.slice!(0, morpheme[:ruby].size)
           next
         else
           # よみがなが不一致なら修正する
           next_morpheme = corrected_uta.parsed_morphemes[i + 1]
           if next_morpheme
             # 修正済みよみがなから次の形態素に一致する箇所を探すことで修正したい形態素のよみがなを取得する
-            next_morpheme_start = correct_yomigana.index(next_morpheme[:ruby])
+            next_morpheme_start = converted_correct_yomigana.index(next_morpheme[:ruby])
 
             # 一致箇所がなければ修正ができないものとして処理を中断する（よみがな不一致が連続すると修正できない）
             # TODO: 再帰を使って連続したよみがな不一致も修正できないか
             break unless next_morpheme_start
 
             # 取得できた場合は修正する
-            morpheme[:ruby] = correct_yomigana[0, next_morpheme_start]
-            correct_yomigana.slice!(0, morpheme[:ruby].size)
+            morpheme[:ruby] = converted_correct_yomigana[0, next_morpheme_start]
+            converted_correct_yomigana.slice!(0, morpheme[:ruby].size)
           else
             # 最後の形態素だった時
-            morpheme[:ruby] = correct_yomigana
+            morpheme[:ruby] = converted_correct_yomigana
           end
         end
       end
@@ -94,6 +96,10 @@ module Utanone
     def convert_number(str)
       # 半角数字を全角数字にしないと読みが取れないので変換する
       str.tr('0-9a-zA-Z', '０-９ａ-ｚＡ-Ｚ')
+    end
+
+    def convert_kana(str)
+      NKF.nkf('--katakana -w', str)
     end
 
     def separated_element(result)

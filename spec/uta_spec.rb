@@ -148,6 +148,21 @@ RSpec.describe Utanone::Uta do
             { word: '灯', ruby: 'アカリ', lexical_category: '名詞' }
           ]
         end
+
+        context '修正するよみがなにひらがなとカタカナが混在している場合' do
+          let(:correct_yomigana) { 'ゴゼンよジノトモしび' }
+
+          it 'よみがなが修正された状態のUtaオブジェクトが返却されること' do
+            expect(subject.yomigana).to eq 'ゴゼンヨジノトモシビ'
+            expect(subject.parsed_morphemes).to eq [
+              { word: '午前', ruby: 'ゴゼン', lexical_category: '名詞' },
+              { word: '四', ruby: 'ヨ', lexical_category: '名詞' },
+              { word: '時', ruby: 'ジ', lexical_category: '名詞' },
+              { word: 'の', ruby: 'ノ', lexical_category: '助詞' },
+              { word: '灯', ruby: 'トモシビ', lexical_category: '名詞' }
+            ]
+          end
+        end
       end
 
       context '修正する形態素が連続している場合' do
