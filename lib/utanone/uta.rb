@@ -8,6 +8,7 @@ module Utanone
 
     EXCLUDING_COUNTING_RUBY_BY_TANKA = /ァ|ィ|ォ|ャ|ュ|ョ/
     EXCLUDING_COUNTING_LEXICAL_CATEGORIES = %w[記号].freeze
+    HIRAGANA_AND_KATAKANA = /\A[ぁ-んァ-ヶー－]+\z/
 
     def initialize(str, ref_uta = nil)
       @original_str = str
@@ -78,14 +79,7 @@ module Utanone
         next if result.is_eos?
 
         morpheme = separated_element(result)
-
-        if ref_uta
-          # ref_utaとして参照するUtaオブジェクトが渡されている場合は読みを参照するUtaオブジェクトから取得する
-          ref_morpheme = ref_uta.parsed_morphemes.find { _1[:word] == morpheme[:word] }
-          morpheme[:ruby] = ref_morpheme[:ruby] if ref_morpheme
-        end
-
-        raise Utanone::ParseError unless morpheme[:ruby]
+        morpheme[:ruby] = correct_ruby(morpheme, ref_uta)
 
         array << morpheme
       end
@@ -119,6 +113,22 @@ module Utanone
         ruby: ruby,
         lexical_category: lexical_category
       }
+    end
+
+    def correct_ruby(morpheme, ref_uta)
+      if ref_uta
+        # ref_utaとして参照するUtaオブジェクトが渡されている場合は読みを参照するUtaオブジェクトから取得する
+        ref_morpheme = ref_uta.parsed_morphemes.find { _1[:word] == morpheme[:word] }
+        morpheme[:ruby] = ref_morpheme[:ruby] if ref_morpheme
+      end
+
+      if morpheme[:ruby]
+        morpheme[:ruby]
+      else
+        raise Utanone::ParseError unless HIRAGANA_AND_KATAKANA.match?(morpheme[:word])
+
+        convert_kana(morpheme[:word])
+      end
     end
 
     def natto
