@@ -1,3 +1,6 @@
+## [0.1.2] - 2021-10-09
+- add: #correct によるよみがな修正の際にひらがなが混在していても修正できるようにした [#7](https://github.com/yuriko1211/utanone/pull/7)
+
 ## [0.1.1] - 2021-09-29
 - fix: Gem install後に想定しているパスでrequire出来なかったため修正
 
